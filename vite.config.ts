@@ -17,6 +17,16 @@ export default defineConfig(({ mode }) => {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+    server: {
+      host: '0.0.0.0',
+      port: 5175,
+      strictPort: true,
+    },
+    preview: {
+      host: '0.0.0.0',
+      port: 4173,
+      strictPort: true,
+    },
     optimizeDeps: {
       exclude: ['lucide-react'],
     },
