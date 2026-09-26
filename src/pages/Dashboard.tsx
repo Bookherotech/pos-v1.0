@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { TrendingUp, TrendingDown, DollarSign, Package, AlertTriangle, ShoppingBag, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, DollarSign, Package, AlertTriangle, ShoppingBag, ArrowUpRight } from 'lucide-react';
 import { supabase, type Sale, type Book } from '@/lib/supabase';
 import { useApp } from '@/context/AppContext';
 import { formatCurrency, formatTime, getTodayRange, getWeekRange, getMonthRange } from '@/lib/utils';
@@ -14,7 +14,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (p: Page) => voi
   const [monthSales, setMonthSales] = useState<number>(0);
   const [lowStockBooks, setLowStockBooks] = useState<Book[]>([]);
   const [recentSales, setRecentSales] = useState<Sale[]>([]);
-  const [topBooks, setTopBooks] = useState<{ title: string; author: string; qty: number; revenue: number }[]>([]);
+  const [topBooks, setTopBooks] = useState<{ title: string; qty: number; revenue: number }[]>([]);
   const [totalBooks, setTotalBooks] = useState<number>(0);
   const [inventoryValue, setInventoryValue] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ export default function Dashboard({ onNavigate }: { onNavigate: (p: Page) => voi
       supabase.from('sales').select('total').gte('created_at', today.start).lt('created_at', today.end).eq('status', 'completed'),
       supabase.from('sales').select('total').gte('created_at', week.start).lt('created_at', week.end).eq('status', 'completed'),
       supabase.from('sales').select('total').gte('created_at', month.start).lt('created_at', month.end).eq('status', 'completed'),
-      supabase.from('books').select('*, category:categories(*)').lt('stock', 10).order('stock', { ascending: true }).limit(8),
+      supabase.from('books').select('*, category:categories(*)').order('stock', { ascending: true }).limit(8),
       supabase.from('sales').select('*, customer:customers(*)').eq('status', 'completed').order('created_at', { ascending: false }).limit(6),
       supabase.from('books').select('price, cost, stock'),
       supabase.from('sale_items').select('book_title, quantity, line_total, sale:sales!inner(status)').eq('sale.status', 'completed').gte('sale.created_at', month.start).lt('sale.created_at', month.end),
@@ -41,14 +41,14 @@ export default function Dashboard({ onNavigate }: { onNavigate: (p: Page) => voi
     setTodayCount(todayRes.data?.length ?? 0);
     setWeekSales(weekRes.data?.reduce((s, r) => s + Number(r.total), 0) ?? 0);
     setMonthSales(monthRes.data?.reduce((s, r) => s + Number(r.total), 0) ?? 0);
-    setLowStockBooks((lowStockRes.data as Book[]) ?? []);
+    setLowStockBooks(((lowStockRes.data as Book[]) ?? []).filter((book) => book.stock <= book.low_stock_threshold));
     setRecentSales((recentRes.data as Sale[]) ?? []);
     setTotalBooks(booksRes.data?.length ?? 0);
     setInventoryValue(booksRes.data?.reduce((s, b) => s + Number(b.cost) * b.stock, 0) ?? 0);
 
     // Aggregate top books
     const bookMap = new Map<string, { title: string; qty: number; revenue: number }>();
-    (topBooksRes.data ?? []).forEach((item: any) => {
+    (topBooksRes.data ?? []).forEach((item) => {
       const existing = bookMap.get(item.book_title) ?? { title: item.book_title, qty: 0, revenue: 0 };
       existing.qty += item.quantity;
       existing.revenue += Number(item.line_total);

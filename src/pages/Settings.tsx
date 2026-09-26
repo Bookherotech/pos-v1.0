@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Store, Percent, Award, Save, Plus, Trash2, X } from 'lucide-react';
+import { Store, Percent, Award, Save, Plus, X } from 'lucide-react';
 import { supabase, type Category, type Settings } from '@/lib/supabase';
 import { useApp } from '@/context/AppContext';
 

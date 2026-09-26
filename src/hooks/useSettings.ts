@@ -6,9 +6,13 @@ export function useSettings() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from('settings').select('*').maybeSingle();
-    if (!error && data) setSettings(data as Settings);
-    setLoading(false);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from('settings').select('*').maybeSingle();
+      if (!error && data) setSettings(data as Settings);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

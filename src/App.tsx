@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { LayoutDashboard, ShoppingCart, Package, Receipt, Users, BarChart3, Settings as SettingsIcon, BookOpen } from 'lucide-react';
 import { AppProvider } from '@/context/AppContext';
 import { useSettings } from '@/hooks/useSettings';
@@ -22,13 +22,32 @@ const navItems: { id: Page; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
 
+function getPageFromHash(): Page {
+  const value = window.location.hash.replace('#/', '') as Page;
+  return navItems.some((item) => item.id === value) ? value : 'dashboard';
+}
+
 function AppContent() {
-  const [page, setPage] = useState<Page>('dashboard');
-  const { settings, reload: reloadSettings, loading } = useSettings();
+  const [page, setPage] = useState<Page>(() => {
+    if (typeof window === 'undefined') return 'dashboard';
+    return getPageFromHash();
+  });
+  const { settings, reload: reloadSettings } = useSettings();
+
+  const navigate = (nextPage: Page) => {
+    setPage(nextPage);
+    window.history.replaceState(null, '', `#/${nextPage}`);
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => setPage(getPageFromHash());
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const renderPage = () => {
     switch (page) {
-      case 'dashboard': return <Dashboard onNavigate={setPage} />;
+      case 'dashboard': return <Dashboard onNavigate={navigate} />;
       case 'pos': return <POS />;
       case 'inventory': return <Inventory />;
       case 'sales': return <Sales />;
@@ -39,7 +58,7 @@ function AppContent() {
   };
 
   return (
-    <AppProvider value={{ settings, reloadSettings, settingsLoading: loading }}>
+    <AppProvider value={{ settings, reloadSettings, settingsLoading: false }}>
       <div className="flex h-screen bg-slate-50">
         {/* Sidebar */}
         <aside className="w-64 bg-slate-900 flex flex-col flex-shrink-0">
@@ -80,14 +99,8 @@ function AppContent() {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto">
-          {loading ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-slate-400">Loading...</div>
-            </div>
-          ) : (
-            renderPage()
-          )}
+        <main className="min-w-0 flex-1 overflow-y-auto">
+          {renderPage()}
         </main>
       </div>
     </AppProvider>
