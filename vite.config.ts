@@ -23,13 +23,13 @@ export default defineConfig(({ mode }) => {
   },
     server: {
       host: '0.0.0.0',
-      port: 5175,
-      strictPort: true,
+      port: 5173,
+      strictPort: false,
     },
     preview: {
       host: '0.0.0.0',
       port: 4173,
-      strictPort: true,
+      strictPort: false,
     },
     optimizeDeps: {
       exclude: ['lucide-react'],
