@@ -284,7 +284,7 @@ export default function POS() {
             ) : (
               <>
                 <UserPlus className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-500">Add customer (optional)</span>
+                <span className="text-slate-500">Add customer</span>
               </>
             )}
           </button>
