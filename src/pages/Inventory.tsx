@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Search, Edit2, Trash2, Package, AlertTriangle, X, TrendingUp, Filter } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Package, AlertTriangle, X, TrendingUp } from 'lucide-react';
 import { supabase, type Book, type Category, type StockAdjustment } from '@/lib/supabase';
 import { useApp } from '@/context/AppContext';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -138,7 +138,7 @@ export default function Inventory() {
             <option value="all">All Categories</option>
             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <select value={stockFilter} onChange={(e) => setStockFilter(e.target.value as any)} className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <select value={stockFilter} onChange={(e) => setStockFilter(e.target.value as 'all' | 'low' | 'out')} className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
             <option value="all">All Stock</option>
             <option value="low">Low Stock</option>
             <option value="out">Out of Stock</option>
@@ -296,13 +296,13 @@ function BookModal({ book, categories, onClose, onSaved }: { book: Book | null; 
             </div>
             <div>
               <label className="text-xs font-medium text-slate-500 mb-1 block">Stock</label>
-              <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="text-xs font-medium text-slate-500 mb-1 block">Low Stock Alert</label>
-              <input type="number" value={form.low_stock_threshold} onChange={(e) => setForm({ ...form, low_stock_threshold: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+              <input type="number" value={form.low_stock_threshold} onChange={(e) => setForm({ ...form, low_stock_threshold: Number(e.target.value) })} className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
             </div>
             <div>
               <label className="text-xs font-medium text-slate-500 mb-1 block">Publisher</label>

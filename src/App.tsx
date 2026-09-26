@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { LayoutDashboard, ShoppingCart, Package, Receipt, Users, BarChart3, Settings as SettingsIcon, BookOpen } from 'lucide-react';
 import { AppProvider } from '@/context/AppContext';
 import { useSettings } from '@/hooks/useSettings';
