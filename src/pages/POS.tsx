@@ -198,12 +198,20 @@ export default function POS() {
   };
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full min-h-0 bg-[#f6f4ef] text-slate-900">
       {/* Product grid */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-6 pb-4">
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Point of Sale</h1>
-          <p className="text-slate-500 text-sm mb-4">Search and add books to the cart</p>
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="border-b border-[#e8e3d9] bg-[#f6f4ef] px-6 pb-5 pt-6">
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Retail workspace</p>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">Sell books</h1>
+              <p className="mt-1 text-sm text-slate-500">Build a sale quickly, then check out with confidence.</p>
+            </div>
+            <div className="hidden rounded-full border border-[#e8e3d9] bg-white px-3 py-1.5 text-xs font-medium text-slate-500 sm:block">
+              {filteredBooks.length} titles available
+            </div>
+          </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
@@ -221,7 +229,7 @@ export default function POS() {
           ) : filteredBooks.length === 0 ? (
             <p className="text-slate-400 text-center py-12">No books found</p>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {filteredBooks.map((book) => {
                 const out = book.stock <= 0;
     const low = book.stock <= book.low_stock_threshold;
@@ -230,11 +238,11 @@ export default function POS() {
         key={book.id}
         onClick={() => addToCart(book)}
         disabled={out}
-        className={`text-left bg-white rounded-xl border p-4 transition-all hover:shadow-md ${
-          out ? 'opacity-50 cursor-not-allowed border-slate-200' : 'border-slate-200 hover:border-amber-300 cursor-pointer'
+        className={`group text-left rounded-2xl border bg-white p-3.5 shadow-[0_2px_10px_rgba(68,55,30,0.03)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(68,55,30,0.1)] ${
+          out ? 'cursor-not-allowed border-slate-200 opacity-50' : 'cursor-pointer border-[#e8e3d9] hover:border-amber-300'
         }`}
       >
-        <div className="aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg mb-3 flex items-center justify-center">
+        <div className="mb-3 flex aspect-[3/4] items-center justify-center rounded-xl bg-gradient-to-br from-[#f1e7d4] via-[#e8d5b5] to-[#c99f68] shadow-inner transition-transform group-hover:scale-[1.02]">
           <span className="text-slate-400 text-xs font-medium text-center px-2 line-clamp-3">{book.title}</span>
         </div>
         <p className="text-sm font-semibold text-slate-900 line-clamp-1">{book.title}</p>
@@ -254,8 +262,8 @@ export default function POS() {
       </div>
 
       {/* Cart panel */}
-      <div className="w-96 bg-white border-l border-slate-200 flex flex-col flex-shrink-0">
-        <div className="p-5 border-b border-slate-200">
+      <div className="flex w-[min(100%,25rem)] shrink-0 flex-col border-l border-[#e8e3d9] bg-white shadow-[-12px_0_30px_rgba(68,55,30,0.04)]">
+        <div className="border-b border-[#eeeae2] p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-slate-900 flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
